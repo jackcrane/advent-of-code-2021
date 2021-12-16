@@ -10,34 +10,49 @@ lines = lines.map((line) => {
   return l.map((entry) => entry.split(','));
 });
 
-let occurances = [];
-
+let points = [];
 lines.forEach((line) => {
-  // Find the slope of the line
   let [x1, y1] = line[0];
   let [x2, y2] = line[1];
   let slope = (y2 - y1) / (x2 - x1);
   if (Math.abs(slope) == Infinity || Math.abs(slope) == 0) {
-    // Find each point the line passes through
-    let points = [];
-    switch (slope.toString()) {
-      case 'Infinity':
-        for (let i = line[0][1]; i <= line[1][1]; i++) {
-          points.push([line[0][0], i]);
+    switch (Math.abs(slope)) {
+      case Infinity:
+        if (line[0][1] <= line[1][1]) {
+          for (let i = line[0][1]; i <= line[1][1]; i++) {
+            points.push([line[0][0].toString(), i.toString()]);
+          }
+        } else {
+          for (let i = line[1][1]; i <= line[0][1]; i++) {
+            points.push([line[0][0].toString(), i.toString()]);
+          }
         }
         break;
-      case '-Infinity':
-        for (let i = line[1][1]; i <= line[0][1]; i++) {
-          points.push([i, line[0][1]]);
-        }
-        break;
-      case '0':
-        for (let i = line[0][0]; i <= line[1][0]; i++) {
-          points.push([i, line[0][1]]);
+      case 0:
+        if (line[0][0] <= line[1][0]) {
+          for (let i = line[0][0]; i <= line[1][0]; i++) {
+            points.push([i.toString(), line[0][1].toString()]);
+          }
+        } else {
+          for (let i = line[1][0]; i <= line[0][0]; i++) {
+            points.push([i.toString(), line[0][1].toString()]);
+          }
         }
         break;
     }
-    console.log(points);
-    // console.log(line, slope, points);
   }
 });
+
+let print = new Array();
+
+var count = {};
+let occurances = 0;
+points.forEach(function (i) {
+  count[i] = (count[i] || 0) + 1;
+  if (count[i] > 1) {
+    occurances++;
+    // console.log(count[i]);
+  }
+});
+// console.log(count);
+console.log(occurances);
